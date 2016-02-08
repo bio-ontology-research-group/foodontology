@@ -1,4 +1,4 @@
-package uima;
+package uima.ontology;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
@@ -65,6 +65,31 @@ public class AnnotationEntity extends Annotation {
     }
 
     // *--------------*
+    // * Features: word
+
+    /**
+     * getter for stem - gets
+     *
+     * @generated
+     */
+    public String getWord() {
+        if (AnnotationEntity_Type.featOkTst && ((AnnotationEntity_Type) jcasType).casFeat_word == null) jcasType.jcas.throwFeatMissing("word",
+                "AnnotationEntity");
+        return jcasType.ll_cas.ll_getStringValue(addr, ((AnnotationEntity_Type) jcasType).casFeatCode_word);
+    }
+
+    /**
+     * setter for stem - sets
+     *
+     * @generated
+     */
+    public void setWord(String v) {
+        if (AnnotationEntity_Type.featOkTst && ((AnnotationEntity_Type) jcasType).casFeat_word == null) jcasType.jcas.throwFeatMissing("word",
+                "AnnotationEntity");
+        jcasType.ll_cas.ll_setStringValue(addr, ((AnnotationEntity_Type) jcasType).casFeatCode_word, v);
+    }
+
+    // *--------------*
     // * Features: stem
 
     /**
@@ -88,6 +113,9 @@ public class AnnotationEntity extends Annotation {
                 "AnnotationEntity");
         jcasType.ll_cas.ll_setStringValue(addr, ((AnnotationEntity_Type) jcasType).casFeatCode_stem, v);
     }
+
+    // *--------------*
+    // * Features: iri
 
     /**
      * getter for stem - gets

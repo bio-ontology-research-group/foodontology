@@ -1,4 +1,4 @@
-package uima;
+package uima.ontology;
 
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
@@ -41,7 +41,7 @@ public class AnnotationEntity_Type extends Annotation_Type {
      * @generated
      * @modifiable
      */
-    public final static boolean featOkTst = JCasRegistry.getFeatOkTst("uima.AnnotationEntity");
+    public final static boolean featOkTst = JCasRegistry.getFeatOkTst("uima.ontology.AnnotationEntity");
 
     /** @generated */
     final Feature casFeat_stem;
@@ -53,13 +53,13 @@ public class AnnotationEntity_Type extends Annotation_Type {
 
     /** @generated */
     public String getStem(int addr) {
-        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.AnnotationEntity");
+        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.ontology.AnnotationEntity");
         return ll_cas.ll_getStringValue(addr, casFeatCode_stem);
     }
 
     /** @generated */
     public void setStem(int addr, String v) {
-        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.AnnotationEntity");
+        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.ontology.AnnotationEntity");
         ll_cas.ll_setStringValue(addr, casFeatCode_stem, v);
     }
 
@@ -71,14 +71,32 @@ public class AnnotationEntity_Type extends Annotation_Type {
 
     /** @generated */
     public String getIri(int addr) {
-        if (featOkTst && casFeat_iri == null) jcas.throwFeatMissing("iri", "uima.AnnotationEntity");
+        if (featOkTst && casFeat_iri == null) jcas.throwFeatMissing("iri", "uima.ontology.AnnotationEntity");
         return ll_cas.ll_getStringValue(addr, casFeatCode_iri);
     }
 
     /** @generated */
     public void setIri(int addr, String v) {
-        if (featOkTst && casFeat_iri == null) jcas.throwFeatMissing("iri", "uima.AnnotationEntity");
+        if (featOkTst && casFeat_iri == null) jcas.throwFeatMissing("iri", "uima.ontology.AnnotationEntity");
         ll_cas.ll_setStringValue(addr, casFeatCode_iri, v);
+    }
+
+    /** @generated */
+    final Feature casFeat_word;
+
+    /** @generated */
+    final int casFeatCode_word;
+
+    /** @generated */
+    public String getWord(int addr) {
+        if (featOkTst && casFeat_word == null) jcas.throwFeatMissing("word", "uima.ontology.AnnotationEntity");
+        return ll_cas.ll_getStringValue(addr, casFeatCode_word);
+    }
+
+    /** @generated */
+    public void setWord(int addr, String v) {
+        if (featOkTst && casFeat_word == null) jcas.throwFeatMissing("word", "uima.ontology.AnnotationEntity");
+        ll_cas.ll_setStringValue(addr, casFeatCode_word, v);
     }
 
     /**
@@ -89,6 +107,9 @@ public class AnnotationEntity_Type extends Annotation_Type {
     public AnnotationEntity_Type(JCas jcas, Type casType) {
         super(jcas, casType);
         casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
+
+        casFeat_word = jcas.getRequiredFeatureDE(casType, "word", "uima.cas.String", featOkTst);
+        casFeatCode_word = (null == casFeat_word) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl) casFeat_word).getCode();
 
         casFeat_stem = jcas.getRequiredFeatureDE(casType, "stem", "uima.cas.String", featOkTst);
         casFeatCode_stem = (null == casFeat_stem) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl) casFeat_stem).getCode();

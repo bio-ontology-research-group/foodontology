@@ -1,17 +1,10 @@
 package util;
 
-import stemmer.EnglishStemmer;
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by miguel on 2/3/16.
@@ -23,29 +16,7 @@ public abstract class AbstractAnnotator {
         annotationsList = new HashMap<String,String>();
     }
 
-    protected void loadTermsFile(File termsFile){
-        if((termsFile!=null)&&(termsFile.exists())) {
-            this.termsFile = termsFile;
-            try {
-                FileInputStream fstream = new FileInputStream(termsFile);
-                BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
-                String strLine = null;
-                String word = null;
-                String stem = null;
-                while ((strLine = br.readLine()) != null) {
-                    if (strLine != null) {
-                        strLine = strLine.toLowerCase();
-                        strLine = AnnotatorTools.removeWhiteSpaces(strLine);
-                        stem = AnnotatorTools.textStemmer(strLine);
-                        annotationsList.put(stem, word);
-                    }
-                }
-                br.close();
-            } catch (Exception e) {
 
-            }
-        }
-    }
 
     public List<RecipeAnnotation> process(String content){
         ArrayList annotations = new ArrayList<RecipeAnnotation>();
@@ -59,6 +30,7 @@ public abstract class AbstractAnnotator {
                 tokens.clear();
                 StringTokenizer tokenizer = new StringTokenizer(annotation);
                 StringTokenizer tokenizedContent = new StringTokenizer(stemmedContent);
+                begin =0;
                 while(tokenizer.hasMoreTokens()){
                     tokens.add(tokenizer.nextToken());
                 }
@@ -72,8 +44,8 @@ public abstract class AbstractAnnotator {
                             }
                         }
                         if(flag){
-                            int pos = stemmedContent.indexOf(tokens.get(0),begin);
-                            annotations.add(new RecipeAnnotation(annotation,annotationsList.get(annotation),pos,pos+annotation.length()));
+                            begin = stemmedContent.indexOf(tokens.get(0),begin);
+                            annotations.add(new RecipeAnnotation(annotation,annotationsList.get(annotation),begin,begin+annotation.length()));
                             begin=begin+annotation.length();
                         }
                     }

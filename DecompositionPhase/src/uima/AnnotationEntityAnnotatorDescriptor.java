@@ -6,9 +6,6 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.uimafit.factory.AnalysisEngineFactory;
 import org.uimafit.factory.TypeSystemDescriptionFactory;
 
-import java.io.File;
-import java.io.FileOutputStream;
-
 public class AnnotationEntityAnnotatorDescriptor {
 
     public static AnalysisEngineDescription createDescriptor()

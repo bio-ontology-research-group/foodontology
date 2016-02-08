@@ -1,5 +1,3 @@
-import measurement.CookingMeasurementsAnnotator
-import method.CookingTechniquesAnnotator
 import org.apache.commons.io.IOUtils
 import org.apache.commons.lang.math.NumberUtils
 import org.apache.uima.analysis_engine.AnalysisEngine
@@ -7,9 +5,9 @@ import org.apache.uima.cas.FSIterator
 import org.apache.uima.jcas.JCas
 import org.uimafit.factory.AnalysisEngineFactory
 import stopwords.StopWordsLists
-import uima.AnnotationEntity
-import util.RecipeAnnotation
-
+import uima.measurement.MeasurementEntity
+import uima.ontology.AnnotationEntity
+import uima.technique.TechniqueEntity
 
 int recipeCounter = 0;
 String separator = System.getProperty("file.separator");
@@ -38,41 +36,42 @@ recipiesFolder.listFiles().each{ recipeFile ->
 
         JCas jCas = AnalysisEngineFactory.process(engine, content);
 
-        AnnotationEntity tokenAnnotation;
-        FSIterator tokenAnnotations = jCas.getAnnotationIndex(AnnotationEntity.type).iterator();
-        for (int i = 0; tokenAnnotations.hasNext(); i++) {
-            tokenAnnotation = (AnnotationEntity) tokenAnnotations.next();
-            annotationFile.println(tokenAnnotation.stem+"\t"+tokenAnnotation.iri+"\t"+tokenAnnotation.begin+"\t"+tokenAnnotation.end);
-            if(conceptFrequency[tokenAnnotation.iri] != null){
-                int counter = conceptFrequency[tokenAnnotation.iri];
+        AnnotationEntity annotationEntity;
+        FSIterator annotations = jCas.getAnnotationIndex(AnnotationEntity.type).iterator();
+        for (int i = 0; annotations.hasNext(); i++) {
+            annotationEntity = (AnnotationEntity) annotations.next();
+            annotationFile.println(annotationEntity.word+"\t"+annotationEntity.stem+"\t"+annotationEntity.iri+"\t"+annotationEntity.begin+"\t"+annotationEntity.end);
+            if(conceptFrequency[annotationEntity.iri] != null){
+                int counter = conceptFrequency[annotationEntity.iri];
                 counter++;
-                conceptFrequency[tokenAnnotation.iri] = counter;
+                conceptFrequency[annotationEntity.iri] = counter;
             }else{
                 def expando = new Expando();
                 expando.counter = 1;
                 expando.termlist = [];
-                conceptFrequency[tokenAnnotation.iri] = 1;
+                conceptFrequency[annotationEntity.iri] = 1;
             }
         }
         //Cooking methods
-        CookingTechniquesAnnotator ctAnnotator = new CookingTechniquesAnnotator();
-        List<RecipeAnnotation> techniques = ctAnnotator.process(content);
-
         annotationFile.println("\n\nTechniques: \n");
-        for(RecipeAnnotation annotation : techniques){
-            annotationFile.println(annotation.getWord()+"\t"+annotation.getStem()+"\t"+annotation.getBegin()+"\t"+annotation.getEnd());
+
+        TechniqueEntity techniqueEntity;
+        annotations = jCas.getAnnotationIndex(TechniqueEntity.type).iterator();
+        for (int i = 0; annotations.hasNext(); i++) {
+            techniqueEntity = (TechniqueEntity) annotations.next();
+            annotationFile.println(techniqueEntity.getWord()+"\t"+techniqueEntity.getStem()+"\t"+techniqueEntity.getBegin()+"\t"+techniqueEntity.getEnd());
 
         }
-
-        //Measurements methods
-        CookingMeasurementsAnnotator cmAnnotator = new CookingMeasurementsAnnotator();
-        List<RecipeAnnotation> measurements = cmAnnotator.process(content);
 
         annotationFile.println("\n\nMeasurements: \n");
-        for(RecipeAnnotation annotation : measurements){
-            annotationFile.println(annotation.getWord()+"\t"+annotation.getStem()+"\t"+annotation.getBegin()+"\t"+annotation.getEnd());
-        }
 
+        MeasurementEntity measurementEntity;
+        annotations = jCas.getAnnotationIndex(MeasurementEntity.type).iterator();
+        for (int i = 0; annotations.hasNext(); i++) {
+            measurementEntity = (MeasurementEntity) annotations.next();
+            annotationFile.println(measurementEntity.getWord()+"\t"+measurementEntity.getStem()+"\t"+measurementEntity.getBegin()+"\t"+measurementEntity.getEnd());
+
+        }
         annotationFile.println("\n************************************");
         annotationFile.println("************************************\n");
 
