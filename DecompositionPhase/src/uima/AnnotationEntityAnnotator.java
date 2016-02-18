@@ -24,10 +24,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,6 +34,14 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
     private HashMap flavorsLabels, foodKBLabels, ontoFoodLabels, openFoodLabels;
     private HashMap languaLabels, phytoChemicals;
     private HashMap<String,HashSet<String>> chebi2phyto;
+
+    public static final int ANNOTATION_ENTITY_TYPE=0;
+    public static final int PHYTOCHEMICAL_ENTITY_TYPE=1;
+    public static final int MEASUREMENT_ENTITY_TYPE=2;
+    public static final int TECHNIQUE_ENTITY_TYPE=3;
+    public static final int FLAVOUR_ENTITY_TYPE=4;
+    public static final int THESAURUS_ENTITY_TYPE=5;
+
 
     public AnnotationEntityAnnotator() {
         //load the ontologies
@@ -382,7 +387,7 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
         }
     }
 
-    private void annotateContent(JCas aJCas, String textStemmed, HashMap<String, WordEntry> map,String entityType) {
+    private void annotateContent(JCas aJCas, String textStemmed, HashMap<String, WordEntry> map,int entityType) {
         String pattern="";
         for (String key : map.keySet()) {
             StringTokenizer keyTokenizer = new StringTokenizer(key);
@@ -399,7 +404,7 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
             while(matcher.find()) {
                 WordEntry entry = map.get(key);
                 switch (entityType) {
-                    case "AnnotationEntity_Type":
+                    case ANNOTATION_ENTITY_TYPE:
                         AnnotationEntity annotation = new AnnotationEntity(aJCas);
                         annotation.setBegin(matcher.start());
                         annotation.setEnd(matcher.end());
@@ -420,7 +425,7 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                             }
                         }
                         break;
-                    case "PhytochemicalEntity_Type":
+                    case PHYTOCHEMICAL_ENTITY_TYPE:
                         for(String idChebi : entry.getAnnotations()) {
                             PhytochemicalEntity phytochemicalEntity = new PhytochemicalEntity(aJCas);
                             phytochemicalEntity.setBegin(matcher.start());
@@ -431,7 +436,7 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                             phytochemicalEntity.addToIndexes();
                         }
                         break;
-                    case "MeasurementEntity_Type":
+                    case MEASUREMENT_ENTITY_TYPE:
                         MeasurementEntity measurement = new MeasurementEntity(aJCas);
                         measurement.setBegin(matcher.start());
                         measurement.setEnd(matcher.end());
@@ -439,7 +444,7 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                         measurement.setStem(entry.getStem());
                         measurement.addToIndexes();
                         break;
-                    case "TechniqueEntity_Type":
+                    case TECHNIQUE_ENTITY_TYPE:
                         TechniqueEntity technique = new TechniqueEntity(aJCas);
                         technique.setBegin(matcher.start());
                         technique.setEnd(matcher.end());
@@ -447,7 +452,7 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                         technique.setStem(entry.getStem());
                         technique.addToIndexes();
                         break;
-                    case "ThesaurusEntity_Type":
+                    case THESAURUS_ENTITY_TYPE:
                         ThesaurusEntity thesaurus = new ThesaurusEntity(aJCas);
                         thesaurus.setBegin(matcher.start());
                         thesaurus.setEnd(matcher.end());
@@ -455,7 +460,7 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                         thesaurus.setStem(entry.getStem());
                         thesaurus.addToIndexes();
                         break;
-                    case "FlavorEntity_Type":
+                    case FLAVOUR_ENTITY_TYPE:
                         for(String flavor : entry.getAnnotations()) {
                             FlavorEntity flavorEntity = new FlavorEntity(aJCas);
                             flavorEntity.setBegin(matcher.start());
@@ -477,26 +482,29 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
      */
     @Override
     public void process(JCas aJCas) {
+        long timeStart = Calendar.getInstance().getTimeInMillis();
         // get document text
         String docText = aJCas.getDocumentText();
 
         //Ontologies
         String docTextStemmed = AnnotatorTools.textStemmer(docText);
         docTextStemmed = docTextStemmed.toLowerCase();
-        annotateContent(aJCas,docTextStemmed,chebiLabels,"AnnotationEntity_Type");
-        annotateContent(aJCas,docTextStemmed,envoLabels,"AnnotationEntity_Type");
-        annotateContent(aJCas,docTextStemmed,ncbiLabels,"AnnotationEntity_Type");
-        annotateContent(aJCas,docTextStemmed,plantLabels,"AnnotationEntity_Type");
-        annotateContent(aJCas,docTextStemmed,uberonLabels,"AnnotationEntity_Type");
+        annotateContent(aJCas,docTextStemmed,chebiLabels,ANNOTATION_ENTITY_TYPE);
+        annotateContent(aJCas,docTextStemmed,envoLabels,ANNOTATION_ENTITY_TYPE);
+        annotateContent(aJCas,docTextStemmed,ncbiLabels,ANNOTATION_ENTITY_TYPE);
+        annotateContent(aJCas,docTextStemmed,plantLabels,ANNOTATION_ENTITY_TYPE);
+        annotateContent(aJCas,docTextStemmed,uberonLabels,ANNOTATION_ENTITY_TYPE);
         //Phytochemicals
-        annotateContent(aJCas,docTextStemmed,phytoChemicals,"PhytochemicalEntity_Type");
+        annotateContent(aJCas,docTextStemmed,phytoChemicals,PHYTOCHEMICAL_ENTITY_TYPE);
         //Measurements
-        annotateContent(aJCas, docTextStemmed, measurementsLabels, "MeasurementEntity_Type");
+        annotateContent(aJCas, docTextStemmed, measurementsLabels, MEASUREMENT_ENTITY_TYPE);
         //Techniques
-        annotateContent(aJCas,docTextStemmed,techniquesLabels,"ThesaurusEntity_Type");
+        annotateContent(aJCas,docTextStemmed,techniquesLabels,TECHNIQUE_ENTITY_TYPE);
         //Flavours
-        annotateContent(aJCas,docTextStemmed,flavorsLabels,"FlavorEntity_Type");
+        annotateContent(aJCas,docTextStemmed,flavorsLabels,FLAVOUR_ENTITY_TYPE);
         //Thesaurus
-        annotateContent(aJCas,docTextStemmed,languaLabels,"ThesaurusEntity_Type");
+        annotateContent(aJCas,docTextStemmed,languaLabels,THESAURUS_ENTITY_TYPE);
+
+        System.out.println(Calendar.getInstance().getTimeInMillis()-timeStart);
     }
 }
