@@ -1,4 +1,4 @@
-package uima.technique;
+package uima.thesaurus;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
@@ -6,12 +6,12 @@ import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.tcas.Annotation;
 import uima.ontology.AnnotationEntity_Type;
 
-public class TechniqueEntity extends Annotation {
+public class ThesaurusEntity extends Annotation {
     /**
      * @generated
      * @ordered
      */
-    public final static int typeIndexID = JCasRegistry.register(TechniqueEntity.class);
+    public final static int typeIndexID = JCasRegistry.register(ThesaurusEntity.class);
 
     /**
      * @generated
@@ -29,7 +29,7 @@ public class TechniqueEntity extends Annotation {
      *
      * @generated
      */
-    protected TechniqueEntity() {
+    protected ThesaurusEntity() {
     }
 
     /**
@@ -37,19 +37,19 @@ public class TechniqueEntity extends Annotation {
      *
      * @generated
      */
-    public TechniqueEntity(int addr, TOP_Type type) {
+    public ThesaurusEntity(int addr, TOP_Type type) {
         super(addr, type);
         readObject();
     }
 
     /** @generated */
-    public TechniqueEntity(JCas jcas) {
+    public ThesaurusEntity(JCas jcas) {
         super(jcas);
         readObject();
     }
 
     /** @generated */
-    public TechniqueEntity(JCas jcas, int begin, int end) {
+    public ThesaurusEntity(JCas jcas, int begin, int end) {
         super(jcas);
         setBegin(begin);
         setEnd(end);
@@ -74,9 +74,9 @@ public class TechniqueEntity extends Annotation {
      * @generated
      */
     public String getStem() {
-        if (TechniqueEntity_Type.featOkTst && ((TechniqueEntity_Type) jcasType).casFeat_stem == null) jcasType.jcas.throwFeatMissing("stem",
-                "TechniqueEntity");
-        return jcasType.ll_cas.ll_getStringValue(addr, ((TechniqueEntity_Type) jcasType).casFeatCode_stem);
+        if (ThesaurusEntity_Type.featOkTst && ((ThesaurusEntity_Type) jcasType).casFeat_stem == null) jcasType.jcas.throwFeatMissing("stem",
+                "ThesaurusEntity");
+        return jcasType.ll_cas.ll_getStringValue(addr, ((ThesaurusEntity_Type) jcasType).casFeatCode_stem);
     }
 
     /**
@@ -85,9 +85,9 @@ public class TechniqueEntity extends Annotation {
      * @generated
      */
     public void setStem(String v) {
-        if (TechniqueEntity_Type.featOkTst && ((TechniqueEntity_Type) jcasType).casFeat_stem == null) jcasType.jcas.throwFeatMissing("stem",
-                "TechniqueEntity");
-        jcasType.ll_cas.ll_setStringValue(addr, ((TechniqueEntity_Type) jcasType).casFeatCode_stem, v);
+        if (ThesaurusEntity_Type.featOkTst && ((ThesaurusEntity_Type) jcasType).casFeat_stem == null) jcasType.jcas.throwFeatMissing("stem",
+                "ThesaurusEntity");
+        jcasType.ll_cas.ll_setStringValue(addr, ((ThesaurusEntity_Type) jcasType).casFeatCode_stem, v);
     }
 
     /**
@@ -96,9 +96,9 @@ public class TechniqueEntity extends Annotation {
      * @generated
      */
     public String getWord() {
-        if (AnnotationEntity_Type.featOkTst && ((TechniqueEntity_Type) jcasType).casFeat_word == null) jcasType.jcas.throwFeatMissing("word",
-                "TechniqueEntity");
-        return jcasType.ll_cas.ll_getStringValue(addr, ((TechniqueEntity_Type) jcasType).casFeatCode_word);
+        if (AnnotationEntity_Type.featOkTst && ((ThesaurusEntity_Type) jcasType).casFeat_word == null) jcasType.jcas.throwFeatMissing("word",
+                "ThesaurusEntity");
+        return jcasType.ll_cas.ll_getStringValue(addr, ((ThesaurusEntity_Type) jcasType).casFeatCode_word);
     }
 
     /**
@@ -107,8 +107,8 @@ public class TechniqueEntity extends Annotation {
      * @generated
      */
     public void setWord(String v) {
-        if (TechniqueEntity_Type.featOkTst && ((TechniqueEntity_Type) jcasType).casFeat_word == null) jcasType.jcas.throwFeatMissing("word",
-                "TechniqueEntity");
-        jcasType.ll_cas.ll_setStringValue(addr, ((TechniqueEntity_Type) jcasType).casFeatCode_word, v);
+        if (ThesaurusEntity_Type.featOkTst && ((ThesaurusEntity_Type) jcasType).casFeat_word == null) jcasType.jcas.throwFeatMissing("word",
+                "ThesaurusEntity");
+        jcasType.ll_cas.ll_setStringValue(addr, ((ThesaurusEntity_Type) jcasType).casFeatCode_word, v);
     }
 }

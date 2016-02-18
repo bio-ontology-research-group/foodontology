@@ -31,7 +31,9 @@ public class AnnotatorTools {
                     wordStemmed += " ";
                 }
             }
-            return(wordStemmed);
+            if(wordStemmed.length()>4) {//To try filter stemmed words very shorts
+                return (wordStemmed);
+            }
         }
         return(word);
     }

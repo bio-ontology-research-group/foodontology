@@ -1,4 +1,4 @@
-package uima.measurement;
+package uima.flavor;
 
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
@@ -11,7 +11,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
-public class MeasurementEntity_Type extends Annotation_Type {
+public class FlavorEntity_Type extends Annotation_Type {
     /** @generated */
     protected FSGenerator getFSGenerator() {
         return fsGenerator;
@@ -20,28 +20,28 @@ public class MeasurementEntity_Type extends Annotation_Type {
     /** @generated */
     private final FSGenerator fsGenerator = new FSGenerator() {
         public FeatureStructure createFS(int addr, CASImpl cas) {
-            if (MeasurementEntity_Type.this.useExistingInstance) {
+            if (FlavorEntity_Type.this.useExistingInstance) {
                 // Return eq fs instance if already created
-                FeatureStructure fs = MeasurementEntity_Type.this.jcas.getJfsFromCaddr(addr);
+                FeatureStructure fs = FlavorEntity_Type.this.jcas.getJfsFromCaddr(addr);
                 if (null == fs) {
-                    fs = new MeasurementEntity(addr, MeasurementEntity_Type.this);
-                    MeasurementEntity_Type.this.jcas.putJfsFromCaddr(addr, fs);
+                    fs = new FlavorEntity(addr, FlavorEntity_Type.this);
+                    FlavorEntity_Type.this.jcas.putJfsFromCaddr(addr, fs);
                     return fs;
                 }
                 return fs;
             }
-            else return new MeasurementEntity(addr, MeasurementEntity_Type.this);
+            else return new FlavorEntity(addr, FlavorEntity_Type.this);
         }
     };
 
     /** @generated */
-    public final static int typeIndexID = MeasurementEntity.typeIndexID;
+    public final static int typeIndexID = FlavorEntity.typeIndexID;
 
     /**
      * @generated
      * @modifiable
      */
-    public final static boolean featOkTst = JCasRegistry.getFeatOkTst("uima.measurement.MeasurementEntity");
+    public final static boolean featOkTst = JCasRegistry.getFeatOkTst("uima.flavor.FlavorEntity");
 
     /** @generated */
     final Feature casFeat_stem;
@@ -53,13 +53,13 @@ public class MeasurementEntity_Type extends Annotation_Type {
 
     /** @generated */
     public String getStem(int addr) {
-        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.measurement.MeasurementEntity");
+        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.flavor.FlavorEntity");
         return ll_cas.ll_getStringValue(addr, casFeatCode_stem);
     }
 
     /** @generated */
     public void setStem(int addr, String v) {
-        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.measurement.MeasurementEntity");
+        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.flavor.FlavorEntity");
         ll_cas.ll_setStringValue(addr, casFeatCode_stem, v);
     }
 
@@ -71,14 +71,32 @@ public class MeasurementEntity_Type extends Annotation_Type {
 
     /** @generated */
     public String getWord(int addr) {
-        if (featOkTst && casFeat_word == null) jcas.throwFeatMissing("word", "uima.measurement.MeasurementEntity");
+        if (featOkTst && casFeat_word == null) jcas.throwFeatMissing("word", "uima.flavor.FlavorEntity");
         return ll_cas.ll_getStringValue(addr, casFeatCode_word);
     }
 
     /** @generated */
     public void setWord(int addr, String v) {
-        if (featOkTst && casFeat_word == null) jcas.throwFeatMissing("word", "uima.measurement.MeasurementEntity");
+        if (featOkTst && casFeat_word == null) jcas.throwFeatMissing("word", "uima.flavor.FlavorEntity");
         ll_cas.ll_setStringValue(addr, casFeatCode_word, v);
+    }
+
+    /** @generated */
+    final Feature casFeat_flavor;
+
+    /** @generated */
+    final int casFeatCode_flavor;
+
+    /** @generated */
+    public String getFlavor(int addr) {
+        if (featOkTst && casFeat_flavor == null) jcas.throwFeatMissing("flavor", "uima.flavor.FlavorEntity");
+        return ll_cas.ll_getStringValue(addr, casFeatCode_flavor);
+    }
+
+    /** @generated */
+    public void setFlavor(int addr, String v) {
+        if (featOkTst && casFeat_flavor == null) jcas.throwFeatMissing("flavor", "uima.flavor.FlavorEntity");
+        ll_cas.ll_setStringValue(addr, casFeatCode_flavor, v);
     }
 
     /**
@@ -86,7 +104,7 @@ public class MeasurementEntity_Type extends Annotation_Type {
      *
      * @generated
      */
-    public MeasurementEntity_Type(JCas jcas, Type casType) {
+    public FlavorEntity_Type(JCas jcas, Type casType) {
         super(jcas, casType);
         casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
@@ -95,6 +113,9 @@ public class MeasurementEntity_Type extends Annotation_Type {
 
         casFeat_word = jcas.getRequiredFeatureDE(casType, "word", "uima.cas.String", featOkTst);
         casFeatCode_word = (null == casFeat_word) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl) casFeat_word).getCode();
+
+        casFeat_flavor = jcas.getRequiredFeatureDE(casType, "flavor", "uima.cas.String", featOkTst);
+        casFeatCode_flavor = (null == casFeat_flavor) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl) casFeat_flavor).getCode();
 
     }
 }

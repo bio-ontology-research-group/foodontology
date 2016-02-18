@@ -5,9 +5,12 @@ import org.apache.uima.cas.FSIterator
 import org.apache.uima.jcas.JCas
 import org.uimafit.factory.AnalysisEngineFactory
 import stopwords.StopWordsLists
+import uima.flavor.FlavorEntity
 import uima.measurement.MeasurementEntity
 import uima.ontology.AnnotationEntity
+import uima.phytochemical.PhytochemicalEntity
 import uima.technique.TechniqueEntity
+import uima.thesaurus.ThesaurusEntity
 
 int recipeCounter = 0;
 String separator = System.getProperty("file.separator");
@@ -52,6 +55,34 @@ recipiesFolder.listFiles().each{ recipeFile ->
                 conceptFrequency[annotationEntity.iri] = 1;
             }
         }
+
+        //Phytochemicals
+        annotationFile.println("\n\nPhytochemicals: \n");
+        PhytochemicalEntity phytochemicalEntity;
+        annotations = jCas.getAnnotationIndex(PhytochemicalEntity.type).iterator();
+        for (int i = 0; annotations.hasNext(); i++) {
+            phytochemicalEntity = (PhytochemicalEntity) annotations.next();
+            annotationFile.println(phytochemicalEntity.getWord()+"\t"+phytochemicalEntity.getStem()+"\t"+phytochemicalEntity.getIri()+"\t"+phytochemicalEntity.getBegin()+"\t"+phytochemicalEntity.getEnd());
+        }
+
+        //Thesaurus
+        annotationFile.println("\n\nThesaurus: \n");
+        ThesaurusEntity thesaurusEntity;
+        annotations = jCas.getAnnotationIndex(ThesaurusEntity.type).iterator();
+        for (int i = 0; annotations.hasNext(); i++) {
+            thesaurusEntity = (ThesaurusEntity) annotations.next();
+            annotationFile.println(thesaurusEntity.getWord()+"\t"+thesaurusEntity.getStem()+"\t"+thesaurusEntity.getBegin()+"\t"+thesaurusEntity.getEnd());
+        }
+
+        //Cooking flavors
+        annotationFile.println("\n\nFlavors: \n");
+        FlavorEntity flavorEntity;
+        annotations = jCas.getAnnotationIndex(FlavorEntity.type).iterator();
+        for (int i = 0; annotations.hasNext(); i++) {
+            flavorEntity = (FlavorEntity) annotations.next();
+            annotationFile.println(flavorEntity.getWord()+"\t"+flavorEntity.getFlavor()+"\t"+flavorEntity.getStem()+"\t"+flavorEntity.getBegin()+"\t"+flavorEntity.getEnd());
+        }
+
         //Cooking methods
         annotationFile.println("\n\nTechniques: \n");
 
@@ -63,6 +94,7 @@ recipiesFolder.listFiles().each{ recipeFile ->
 
         }
 
+        //Cooking measurements
         annotationFile.println("\n\nMeasurements: \n");
 
         MeasurementEntity measurementEntity;

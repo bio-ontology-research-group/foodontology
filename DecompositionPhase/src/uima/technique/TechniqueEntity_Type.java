@@ -41,7 +41,7 @@ public class TechniqueEntity_Type extends Annotation_Type {
      * @generated
      * @modifiable
      */
-    public final static boolean featOkTst = JCasRegistry.getFeatOkTst("uima.ontology.TechniqueEntity");
+    public final static boolean featOkTst = JCasRegistry.getFeatOkTst("uima.ontology.ThesaurusEntity");
 
     /** @generated */
     public final Feature casFeat_stem;
@@ -53,13 +53,13 @@ public class TechniqueEntity_Type extends Annotation_Type {
 
     /** @generated */
     public String getStem(int addr) {
-        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.ontology.TechniqueEntity");
+        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.ontology.ThesaurusEntity");
         return ll_cas.ll_getStringValue(addr, casFeatCode_stem);
     }
 
     /** @generated */
     public void setStem(int addr, String v) {
-        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.ontology.TechniqueEntity");
+        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.ontology.ThesaurusEntity");
         ll_cas.ll_setStringValue(addr, casFeatCode_stem, v);
     }
 
@@ -71,13 +71,13 @@ public class TechniqueEntity_Type extends Annotation_Type {
 
     /** @generated */
     public String getIri(int addr) {
-        if (featOkTst && casFeat_word == null) jcas.throwFeatMissing("word", "uima.technique.TechniqueEntity");
+        if (featOkTst && casFeat_word == null) jcas.throwFeatMissing("word", "uima.technique.ThesaurusEntity");
         return ll_cas.ll_getStringValue(addr, casFeatCode_word);
     }
 
     /** @generated */
     public void setIri(int addr, String v) {
-        if (featOkTst && casFeat_word == null) jcas.throwFeatMissing("word", "uima.ontology.TechniqueEntity");
+        if (featOkTst && casFeat_word == null) jcas.throwFeatMissing("word", "uima.ontology.ThesaurusEntity");
         ll_cas.ll_setStringValue(addr, casFeatCode_word, v);
     }
 

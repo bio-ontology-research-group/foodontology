@@ -1,4 +1,4 @@
-package uima.measurement;
+package uima.thesaurus;
 
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
@@ -11,7 +11,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
-public class MeasurementEntity_Type extends Annotation_Type {
+public class ThesaurusEntity_Type extends Annotation_Type {
     /** @generated */
     protected FSGenerator getFSGenerator() {
         return fsGenerator;
@@ -20,46 +20,46 @@ public class MeasurementEntity_Type extends Annotation_Type {
     /** @generated */
     private final FSGenerator fsGenerator = new FSGenerator() {
         public FeatureStructure createFS(int addr, CASImpl cas) {
-            if (MeasurementEntity_Type.this.useExistingInstance) {
+            if (ThesaurusEntity_Type.this.useExistingInstance) {
                 // Return eq fs instance if already created
-                FeatureStructure fs = MeasurementEntity_Type.this.jcas.getJfsFromCaddr(addr);
+                FeatureStructure fs = ThesaurusEntity_Type.this.jcas.getJfsFromCaddr(addr);
                 if (null == fs) {
-                    fs = new MeasurementEntity(addr, MeasurementEntity_Type.this);
-                    MeasurementEntity_Type.this.jcas.putJfsFromCaddr(addr, fs);
+                    fs = new ThesaurusEntity(addr, ThesaurusEntity_Type.this);
+                    uima.thesaurus.ThesaurusEntity_Type.this.jcas.putJfsFromCaddr(addr, fs);
                     return fs;
                 }
                 return fs;
             }
-            else return new MeasurementEntity(addr, MeasurementEntity_Type.this);
+            else return new ThesaurusEntity(addr, uima.thesaurus.ThesaurusEntity_Type.this);
         }
     };
 
     /** @generated */
-    public final static int typeIndexID = MeasurementEntity.typeIndexID;
+    public final static int typeIndexID = ThesaurusEntity.typeIndexID;
 
     /**
      * @generated
      * @modifiable
      */
-    public final static boolean featOkTst = JCasRegistry.getFeatOkTst("uima.measurement.MeasurementEntity");
+    public final static boolean featOkTst = JCasRegistry.getFeatOkTst("uima.thesaurus.ThesaurusEntity");
 
     /** @generated */
-    final Feature casFeat_stem;
+    public final Feature casFeat_stem;
 
 
     /** @generated */
-    final int casFeatCode_stem;
+    public final int casFeatCode_stem;
 
 
     /** @generated */
     public String getStem(int addr) {
-        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.measurement.MeasurementEntity");
+        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.thesaurus.ThesaurusEntity");
         return ll_cas.ll_getStringValue(addr, casFeatCode_stem);
     }
 
     /** @generated */
     public void setStem(int addr, String v) {
-        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.measurement.MeasurementEntity");
+        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.thesaurus.ThesaurusEntity");
         ll_cas.ll_setStringValue(addr, casFeatCode_stem, v);
     }
 
@@ -70,14 +70,14 @@ public class MeasurementEntity_Type extends Annotation_Type {
     final int casFeatCode_word;
 
     /** @generated */
-    public String getWord(int addr) {
-        if (featOkTst && casFeat_word == null) jcas.throwFeatMissing("word", "uima.measurement.MeasurementEntity");
+    public String getIri(int addr) {
+        if (featOkTst && casFeat_word == null) jcas.throwFeatMissing("word", "uima.thesaurus.ThesaurusEntity");
         return ll_cas.ll_getStringValue(addr, casFeatCode_word);
     }
 
     /** @generated */
-    public void setWord(int addr, String v) {
-        if (featOkTst && casFeat_word == null) jcas.throwFeatMissing("word", "uima.measurement.MeasurementEntity");
+    public void setIri(int addr, String v) {
+        if (featOkTst && casFeat_word == null) jcas.throwFeatMissing("word", "uima.thesaurus.ThesaurusEntity");
         ll_cas.ll_setStringValue(addr, casFeatCode_word, v);
     }
 
@@ -86,7 +86,7 @@ public class MeasurementEntity_Type extends Annotation_Type {
      *
      * @generated
      */
-    public MeasurementEntity_Type(JCas jcas, Type casType) {
+    public ThesaurusEntity_Type(JCas jcas, Type casType) {
         super(jcas, casType);
         casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
