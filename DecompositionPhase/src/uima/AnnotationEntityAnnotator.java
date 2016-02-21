@@ -34,6 +34,7 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
     private HashMap flavorsLabels, foodKBLabels, ontoFoodLabels, openFoodLabels;
     private HashMap languaLabels, phytoChemicals;
     private HashMap<String,HashSet<String>> chebi2phyto;
+    private AnnotatorTools annotatorTools;
 
     public static final int ANNOTATION_ENTITY_TYPE=0;
     public static final int PHYTOCHEMICAL_ENTITY_TYPE=1;
@@ -44,6 +45,8 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
 
 
     public AnnotationEntityAnnotator() {
+        //create the annotator tool
+        annotatorTools= new AnnotatorTools();
         //load the ontologies
         String separator = System.getProperty("file.separator");
         String currentPath = System.getProperty("user.dir").replace("src", "");
@@ -119,7 +122,7 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                                 HashSet<String> set = null;
                                 for(String id : idsChebi) {
                                     id = id.toUpperCase();
-                                    id = AnnotatorTools.removeWhiteSpaces(id);
+                                    id = annotatorTools.removeWhiteSpaces(id);
                                     id = "CHEBI_"+id;
                                     if (chebi2phyto.containsKey(id)) {
                                         set = chebi2phyto.get(id);
@@ -132,12 +135,12 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                             }
                             if(plantName.compareTo(".")!=0){
                                 plantName = plantName.toLowerCase();
-                                plantName = AnnotatorTools.removeWhiteSpaces(plantName);
-                                String plantNameStemmed = AnnotatorTools.textStemmer(plantName);
+                                plantName = annotatorTools.removeWhiteSpaces(plantName);
+                                String plantNameStemmed = annotatorTools.textStemmer(plantName);
                                 WordEntry entry = new WordEntry(plantName, plantNameStemmed);
                                 for(String id : idsChebi) {
                                     id = id.toUpperCase();
-                                    id = AnnotatorTools.removeWhiteSpaces(id);
+                                    id = annotatorTools.removeWhiteSpaces(id);
                                     id = "CHEBI_" + id;
                                     entry.addAnnotation(id);
                                 }
@@ -208,14 +211,14 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                     }
                     for(String term : termSet){
                         term = term.toLowerCase();
-                        term = AnnotatorTools.removeWhiteSpaces(term);
-                        String stem = AnnotatorTools.textStemmer(term);
+                        term = annotatorTools.removeWhiteSpaces(term);
+                        String stem = annotatorTools.textStemmer(term);
                         hashMap.put(stem, new WordEntry(term,stem));
                     }
                     for(String synonym : synSet){
                         synonym = synonym.toLowerCase();
-                        synonym = AnnotatorTools.removeWhiteSpaces(synonym);
-                        String stem = AnnotatorTools.textStemmer(synonym);
+                        synonym = annotatorTools.removeWhiteSpaces(synonym);
+                        String stem = annotatorTools.textStemmer(synonym);
                         hashMap.put(stem, new WordEntry(synonym,stem));
                     }
                 }
@@ -242,8 +245,8 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                             String[] ingredients = attributes[5].split(",");
                             for(String ingredient : ingredients) {
                                 ingredient = ingredient.toLowerCase();
-                                ingredient = AnnotatorTools.removeWhiteSpaces(ingredient);
-                                stem = AnnotatorTools.textStemmer(ingredient);
+                                ingredient = annotatorTools.removeWhiteSpaces(ingredient);
+                                stem = annotatorTools.textStemmer(ingredient);
                                 if(hashMap.containsKey(stem)){
                                     wordEntry = hashMap.get(stem);
                                     wordEntry.addAnnotation(flavor);
@@ -277,8 +280,8 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                 while ((strLine = br.readLine()) != null) {
                     if (strLine != null) {
                         strLine = strLine.toLowerCase();
-                        strLine = AnnotatorTools.removeWhiteSpaces(strLine);
-                        stem = AnnotatorTools.textStemmer(strLine);
+                        strLine = annotatorTools.removeWhiteSpaces(strLine);
+                        stem = annotatorTools.textStemmer(strLine);
                         hashMap.put(stem, new WordEntry(strLine,stem));
                     }
                 }
@@ -314,8 +317,8 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                                 literal = annotation.getValue().asLiteral().get().getLiteral();
                             }
                             literal = literal.toLowerCase();
-                            literal = AnnotatorTools.removeWhiteSpaces(literal);
-                            String literalStemmed = AnnotatorTools.textStemmer(literal);
+                            literal = annotatorTools.removeWhiteSpaces(literal);
+                            String literalStemmed = annotatorTools.textStemmer(literal);
                             hashMap.put(literalStemmed, new WordEntry(literal, iri.getShortForm(), literalStemmed));
                         }
                     }
@@ -342,8 +345,8 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                     String literal = owlClass.getIRI().getShortForm();
                     literal = literal.replaceAll("_"," ");
                     literal = literal.toLowerCase();
-                    literal = AnnotatorTools.removeWhiteSpaces(literal);
-                    String literalStemmed = AnnotatorTools.textStemmer(literal);
+                    literal = annotatorTools.removeWhiteSpaces(literal);
+                    String literalStemmed = annotatorTools.textStemmer(literal);
                     hashMap.put(literalStemmed, new WordEntry(literal, iri, literalStemmed));
                 }
             }
@@ -370,10 +373,10 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                                 annotation.getProperty().getIRI().getRemainder().get().toLowerCase().contains("synonym") ){
                             if(annotation.getValue() instanceof OWLLiteral) {
                                 String label = ((OWLLiteral) annotation.getValue()).getLiteral();
-                                label = AnnotatorTools.removeWhiteSpaces(label);
+                                label = annotatorTools.removeWhiteSpaces(label);
                                 if(label.length()>4) {
                                     label = label.toLowerCase();
-                                    String labelStemmed = AnnotatorTools.textStemmer(label);
+                                    String labelStemmed = annotatorTools.textStemmer(label);
                                     hashMap.put(labelStemmed, new WordEntry(label, iri, labelStemmed));
                                 }
                             }
@@ -393,7 +396,7 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
             StringTokenizer keyTokenizer = new StringTokenizer(key);
             pattern="(\\b";
             while (keyTokenizer.hasMoreTokens()) {
-                pattern +=AnnotatorTools.escapePattern(keyTokenizer.nextToken())+"[\\w]*";
+                pattern +=annotatorTools.escapePattern(keyTokenizer.nextToken())+"[\\w]*";
                 if(keyTokenizer.hasMoreTokens()){
                     pattern +="\\s";
                 }
@@ -482,12 +485,11 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
      */
     @Override
     public void process(JCas aJCas) {
-        long timeStart = Calendar.getInstance().getTimeInMillis();
         // get document text
         String docText = aJCas.getDocumentText();
 
         //Ontologies
-        String docTextStemmed = AnnotatorTools.textStemmer(docText);
+        String docTextStemmed = annotatorTools.textStemmer(docText);
         docTextStemmed = docTextStemmed.toLowerCase();
         annotateContent(aJCas,docTextStemmed,chebiLabels,ANNOTATION_ENTITY_TYPE);
         annotateContent(aJCas,docTextStemmed,envoLabels,ANNOTATION_ENTITY_TYPE);
@@ -505,6 +507,5 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
         //Thesaurus
         annotateContent(aJCas,docTextStemmed,languaLabels,THESAURUS_ENTITY_TYPE);
 
-        System.out.println(Calendar.getInstance().getTimeInMillis()-timeStart);
     }
 }

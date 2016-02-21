@@ -7,8 +7,12 @@ import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 public class AnnotatorTools {
-    protected static EnglishStemmer stemmer = new EnglishStemmer();
-    public static String escapePattern(String word){
+    protected EnglishStemmer stemmer;
+
+    public AnnotatorTools(){
+        stemmer = new EnglishStemmer();
+    }
+    public String escapePattern(String word){
         if((word!=null)&&(!word.isEmpty())) {
             Pattern specialRegexChars = Pattern.compile("[{}()\\[\\].+*?^$\\\\|]");
             String wordEscaped = specialRegexChars.matcher(word).replaceAll("\\\\$0");
@@ -17,7 +21,7 @@ public class AnnotatorTools {
         return (word);
     }
 
-    public static String textStemmer(String word){
+    public String textStemmer(String word){
         if((word!=null)&&(!word.isEmpty())) {
             StringTokenizer tokenizer = new StringTokenizer(word);
             String token;
@@ -38,7 +42,7 @@ public class AnnotatorTools {
         return(word);
     }
 
-    public static String removeWhiteSpaces(String word){
+    public String removeWhiteSpaces(String word){
         if((word!=null)&&(!word.isEmpty())){
             word = word.replaceAll("^\\s+", ""); //We remove the lefth whitespaces
             word = word.replaceAll("\\s+$", ""); //we remove the right whitespaces
