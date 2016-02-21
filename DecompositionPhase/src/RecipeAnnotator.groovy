@@ -23,15 +23,13 @@ ConcurrentHashMap conceptFrequency = new ConcurrentHashMap();
 
 GParsPool.withPool {
     def annotationFile = new PrintWriter(new BufferedWriter(new FileWriter(currentPath+separator+"outputs"+separator+"annotation_paralell.txt")));
+    AnalysisEngine engine = AnalysisEngineFactory
+            .createAnalysisEngineFromPath(currentPath + separator + "resources" + separator + "annotators" + separator + "RecipeAnnotator.xml");
 
     File recipiesFolder = new File(currentPath+separator+"resources"+separator+"recipes");
     recipiesFolder.listFiles().eachParallel { recipeFile ->
         if (recipeFile != null) {
             recipeCounter++;
-
-            AnalysisEngine engine = AnalysisEngineFactory
-                    .createAnalysisEngineFromPath(currentPath + separator + "resources" + separator + "annotators" + separator + "RecipeAnnotator.xml");
-
             //Ontologies
             String title = URLDecoder.decode(recipeFile.getName(), "utf-8");
             if (title.lastIndexOf('.') > -1) {
@@ -41,21 +39,20 @@ GParsPool.withPool {
             String content = IOUtils.toString(new FileReader(recipeFile));
 
             JCas jCas = AnalysisEngineFactory.process(engine, content);
-
-            synchronized (annotationFile) {
-
-                annotationFile.println("Title: " + title);
-                annotationFile.println("Content: \n" + content);
-                annotationFile.println("Annotations: \n");
-
+            synchronized (jCas) {
+                String annotation = "\n************************************\n";
+                annotation += "************************************\n";
+                annotation += "Title: " + title + "\n";
+                annotation += "Content: \n" + content + "\n";
+                annotation += "Annotations: \n";
 
                 AnnotationEntity annotationEntity;
                 FSIterator annotations = jCas.getAnnotationIndex(AnnotationEntity.type).iterator();
                 for (int i = 0; annotations.hasNext(); i++) {
                     annotationEntity = (AnnotationEntity) annotations.next();
-                    annotationFile.println(annotationEntity.word + "\t" + annotationEntity.stem + "\t" + annotationEntity.iri + "\t" + annotationEntity.begin + "\t" + annotationEntity.end);
-                    if (conceptFrequency.containsKey(annotationEntity.iri) != null) {
-                        int counter = conceptFrequency.get(annotationEntity.iri);
+                    annotation += annotationEntity.word + "\t" + annotationEntity.stem + "\t" + annotationEntity.iri + "\t" + annotationEntity.begin + "\t" + annotationEntity.end + "\n";
+                    if (conceptFrequency.containsKey(annotationEntity.iri)) {
+                        int counter = (Integer)conceptFrequency.get(annotationEntity.iri);
                         counter++;
                         conceptFrequency.put(annotationEntity.iri, counter);
                     } else {
@@ -64,71 +61,70 @@ GParsPool.withPool {
                 }
 
                 //Phytochemicals
-                annotationFile.println("\n\nPhytochemicals: \n");
+                annotation += "\n\nPhytochemicals: \n\n";
                 PhytochemicalEntity phytochemicalEntity;
                 annotations = jCas.getAnnotationIndex(PhytochemicalEntity.type).iterator();
                 for (int i = 0; annotations.hasNext(); i++) {
                     phytochemicalEntity = (PhytochemicalEntity) annotations.next();
-                    annotationFile.println(phytochemicalEntity.getWord() + "\t" + phytochemicalEntity.getStem() + "\t" + phytochemicalEntity.getIri() + "\t" + phytochemicalEntity.getBegin() + "\t" + phytochemicalEntity.getEnd());
+                    annotation += phytochemicalEntity.getWord() + "\t" + phytochemicalEntity.getStem() + "\t" + phytochemicalEntity.getIri() + "\t" + phytochemicalEntity.getBegin() + "\t" + phytochemicalEntity.getEnd() + "\n";
                 }
 
                 //Thesaurus
-                annotationFile.println("\n\nThesaurus: \n");
+                annotation += "\n\nThesaurus: \n\n";
                 ThesaurusEntity thesaurusEntity;
                 annotations = jCas.getAnnotationIndex(ThesaurusEntity.type).iterator();
                 for (int i = 0; annotations.hasNext(); i++) {
                     thesaurusEntity = (ThesaurusEntity) annotations.next();
-                    annotationFile.println(thesaurusEntity.getWord() + "\t" + thesaurusEntity.getStem() + "\t" + thesaurusEntity.getBegin() + "\t" + thesaurusEntity.getEnd());
+                    annotation += thesaurusEntity.getWord() + "\t" + thesaurusEntity.getStem() + "\t" + thesaurusEntity.getBegin() + "\t" + thesaurusEntity.getEnd() + "\n";
                 }
 
                 //Cooking flavors
-                annotationFile.println("\n\nFlavors: \n");
+                annotation += "\n\nFlavors: \n\n";
                 FlavorEntity flavorEntity;
                 annotations = jCas.getAnnotationIndex(FlavorEntity.type).iterator();
                 for (int i = 0; annotations.hasNext(); i++) {
                     flavorEntity = (FlavorEntity) annotations.next();
-                    annotationFile.println(flavorEntity.getWord() + "\t" + flavorEntity.getFlavor() + "\t" + flavorEntity.getStem() + "\t" + flavorEntity.getBegin() + "\t" + flavorEntity.getEnd());
+                    annotation += flavorEntity.getWord() + "\t" + flavorEntity.getFlavor() + "\t" + flavorEntity.getStem() + "\t" + flavorEntity.getBegin() + "\t" + flavorEntity.getEnd() + "\n";
                 }
 
                 //Cooking methods
-                annotationFile.println("\n\nTechniques: \n");
-
+                annotation += "\n\nTechniques: \n\n";
                 TechniqueEntity techniqueEntity;
                 annotations = jCas.getAnnotationIndex(TechniqueEntity.type).iterator();
                 for (int i = 0; annotations.hasNext(); i++) {
                     techniqueEntity = (TechniqueEntity) annotations.next();
-                    annotationFile.println(techniqueEntity.getWord() + "\t" + techniqueEntity.getStem() + "\t" + techniqueEntity.getBegin() + "\t" + techniqueEntity.getEnd());
+                    annotation += techniqueEntity.getWord() + "\t" + techniqueEntity.getStem() + "\t" + techniqueEntity.getBegin() + "\t" + techniqueEntity.getEnd() + "\n";
 
                 }
 
                 //Cooking measurements
-                annotationFile.println("\n\nMeasurements: \n");
+                annotation += "\n\nMeasurements: \n\n";
 
                 MeasurementEntity measurementEntity;
                 annotations = jCas.getAnnotationIndex(MeasurementEntity.type).iterator();
                 for (int i = 0; annotations.hasNext(); i++) {
                     measurementEntity = (MeasurementEntity) annotations.next();
-                    annotationFile.println(measurementEntity.getWord() + "\t" + measurementEntity.getStem() + "\t" + measurementEntity.getBegin() + "\t" + measurementEntity.getEnd());
+                    annotation += measurementEntity.getWord() + "\t" + measurementEntity.getStem() + "\t" + measurementEntity.getBegin() + "\t" + measurementEntity.getEnd() + "\n";
 
                 }
-                annotationFile.println("\n************************************");
-                annotationFile.println("************************************\n");
-
-                //Frequency analysis
-                StringTokenizer tokenizer = new StringTokenizer(content);
-                String token;
-                while (tokenizer.hasMoreElements()) {
-                    token = tokenizer.nextElement();
-                    token = token.toLowerCase();
-                    if (!NumberUtils.isDigits(token)) {
-                        if (!StopWordsLists.getInstance().checkWord(token)) {
-                            if (termFrequency[token] != null) {
-                                int counter = termFrequency[token];
-                                counter++;
-                                termFrequency[token] = counter;
-                            } else {
-                                termFrequency[token] = 1;
-                            }
+                synchronized (annotationFile){
+                    annotationFile.println(annotation);
+                }
+            }
+            //Frequency analysis
+            StringTokenizer tokenizer = new StringTokenizer(content);
+            String token;
+            while (tokenizer.hasMoreElements()) {
+                token = tokenizer.nextElement();
+                token = token.toLowerCase();
+                if (!NumberUtils.isDigits(token)) {
+                    if (!StopWordsLists.getInstance().checkWord(token)) {
+                        if (termFrequency.containsKey(token)) {
+                            int counter =(Integer) termFrequency.get(token);
+                            counter++;
+                            termFrequency.put(token,counter);
+                        } else {
+                            termFrequency.put(token, 1);
                         }
                     }
                 }
