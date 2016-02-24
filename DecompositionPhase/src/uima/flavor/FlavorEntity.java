@@ -119,9 +119,9 @@ public class FlavorEntity extends Annotation {
      * @generated
      */
     public String getFlavor() {
-        if (FlavorEntity_Type.featOkTst && ((FlavorEntity_Type) jcasType).casFeat_word == null) jcasType.jcas.throwFeatMissing("flavor",
+        if (FlavorEntity_Type.featOkTst && ((FlavorEntity_Type) jcasType).casFeat_flavor == null) jcasType.jcas.throwFeatMissing("flavor",
                 "FlavorEntity");
-        return jcasType.ll_cas.ll_getStringValue(addr, ((FlavorEntity_Type) jcasType).casFeatCode_word);
+        return jcasType.ll_cas.ll_getStringValue(addr, ((FlavorEntity_Type) jcasType).casFeatCode_flavor);
     }
 
     /**
@@ -130,8 +130,8 @@ public class FlavorEntity extends Annotation {
      * @generated
      */
     public void setFlavor(String v) {
-        if (FlavorEntity_Type.featOkTst && ((FlavorEntity_Type) jcasType).casFeat_word == null) jcasType.jcas.throwFeatMissing("flavor",
+        if (FlavorEntity_Type.featOkTst && ((FlavorEntity_Type) jcasType).casFeat_flavor == null) jcasType.jcas.throwFeatMissing("flavor",
                 "FlavorEntity");
-        jcasType.ll_cas.ll_setStringValue(addr, ((FlavorEntity_Type) jcasType).casFeatCode_word, v);
+        jcasType.ll_cas.ll_setStringValue(addr, ((FlavorEntity_Type) jcasType).casFeatCode_flavor, v);
     }
 }

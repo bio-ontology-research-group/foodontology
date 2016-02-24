@@ -4,7 +4,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.tcas.Annotation;
-import uima.ontology.AnnotationEntity_Type;
 
 public class ThesaurusEntity extends Annotation {
     /**
@@ -96,7 +95,7 @@ public class ThesaurusEntity extends Annotation {
      * @generated
      */
     public String getWord() {
-        if (AnnotationEntity_Type.featOkTst && ((ThesaurusEntity_Type) jcasType).casFeat_word == null) jcasType.jcas.throwFeatMissing("word",
+        if (ThesaurusEntity_Type.featOkTst && ((ThesaurusEntity_Type) jcasType).casFeat_word == null) jcasType.jcas.throwFeatMissing("word",
                 "ThesaurusEntity");
         return jcasType.ll_cas.ll_getStringValue(addr, ((ThesaurusEntity_Type) jcasType).casFeatCode_word);
     }

@@ -11,7 +11,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
-public class AnnotationEntity_Type extends Annotation_Type {
+public class UberonEntity_Type extends Annotation_Type {
     /** @generated */
     protected FSGenerator getFSGenerator() {
         return fsGenerator;
@@ -20,28 +20,28 @@ public class AnnotationEntity_Type extends Annotation_Type {
     /** @generated */
     private final FSGenerator fsGenerator = new FSGenerator() {
         public FeatureStructure createFS(int addr, CASImpl cas) {
-            if (AnnotationEntity_Type.this.useExistingInstance) {
+            if (UberonEntity_Type.this.useExistingInstance) {
                 // Return eq fs instance if already created
-                FeatureStructure fs = AnnotationEntity_Type.this.jcas.getJfsFromCaddr(addr);
+                FeatureStructure fs = UberonEntity_Type.this.jcas.getJfsFromCaddr(addr);
                 if (null == fs) {
-                    fs = new AnnotationEntity(addr, AnnotationEntity_Type.this);
-                    AnnotationEntity_Type.this.jcas.putJfsFromCaddr(addr, fs);
+                    fs = new UberonEntity(addr, UberonEntity_Type.this);
+                    UberonEntity_Type.this.jcas.putJfsFromCaddr(addr, fs);
                     return fs;
                 }
                 return fs;
             }
-            else return new AnnotationEntity(addr, AnnotationEntity_Type.this);
+            else return new UberonEntity(addr, UberonEntity_Type.this);
         }
     };
 
     /** @generated */
-    public final static int typeIndexID = AnnotationEntity.typeIndexID;
+    public final static int typeIndexID = UberonEntity.typeIndexID;
 
     /**
      * @generated
      * @modifiable
      */
-    public final static boolean featOkTst = JCasRegistry.getFeatOkTst("uima.ontology.AnnotationEntity");
+    public final static boolean featOkTst = JCasRegistry.getFeatOkTst("uima.ontology.UberonEntity");
 
     /** @generated */
     final Feature casFeat_stem;
@@ -53,13 +53,13 @@ public class AnnotationEntity_Type extends Annotation_Type {
 
     /** @generated */
     public String getStem(int addr) {
-        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.ontology.AnnotationEntity");
+        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.ontology.UberonEntity");
         return ll_cas.ll_getStringValue(addr, casFeatCode_stem);
     }
 
     /** @generated */
     public void setStem(int addr, String v) {
-        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.ontology.AnnotationEntity");
+        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.ontology.UberonEntity");
         ll_cas.ll_setStringValue(addr, casFeatCode_stem, v);
     }
 
@@ -71,13 +71,13 @@ public class AnnotationEntity_Type extends Annotation_Type {
 
     /** @generated */
     public String getIri(int addr) {
-        if (featOkTst && casFeat_iri == null) jcas.throwFeatMissing("iri", "uima.ontology.AnnotationEntity");
+        if (featOkTst && casFeat_iri == null) jcas.throwFeatMissing("iri", "uima.ontology.UberonEntity");
         return ll_cas.ll_getStringValue(addr, casFeatCode_iri);
     }
 
     /** @generated */
     public void setIri(int addr, String v) {
-        if (featOkTst && casFeat_iri == null) jcas.throwFeatMissing("iri", "uima.ontology.AnnotationEntity");
+        if (featOkTst && casFeat_iri == null) jcas.throwFeatMissing("iri", "uima.ontology.UberonEntity");
         ll_cas.ll_setStringValue(addr, casFeatCode_iri, v);
     }
 
@@ -89,13 +89,13 @@ public class AnnotationEntity_Type extends Annotation_Type {
 
     /** @generated */
     public String getWord(int addr) {
-        if (featOkTst && casFeat_word == null) jcas.throwFeatMissing("word", "uima.ontology.AnnotationEntity");
+        if (featOkTst && casFeat_word == null) jcas.throwFeatMissing("word", "uima.ontology.UberonEntity");
         return ll_cas.ll_getStringValue(addr, casFeatCode_word);
     }
 
     /** @generated */
     public void setWord(int addr, String v) {
-        if (featOkTst && casFeat_word == null) jcas.throwFeatMissing("word", "uima.ontology.AnnotationEntity");
+        if (featOkTst && casFeat_word == null) jcas.throwFeatMissing("word", "uima.ontology.UberonEntity");
         ll_cas.ll_setStringValue(addr, casFeatCode_word, v);
     }
 
@@ -104,7 +104,7 @@ public class AnnotationEntity_Type extends Annotation_Type {
      *
      * @generated
      */
-    public AnnotationEntity_Type(JCas jcas, Type casType) {
+    public UberonEntity_Type(JCas jcas, Type casType) {
         super(jcas, casType);
         casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 

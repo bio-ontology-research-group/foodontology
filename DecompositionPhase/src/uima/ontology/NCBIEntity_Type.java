@@ -1,4 +1,4 @@
-package uima;
+package uima.ontology;
 
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
@@ -11,7 +11,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
-public class AnnotationEntity_Type extends Annotation_Type {
+public class NCBIEntity_Type extends Annotation_Type {
     /** @generated */
     protected FSGenerator getFSGenerator() {
         return fsGenerator;
@@ -20,28 +20,28 @@ public class AnnotationEntity_Type extends Annotation_Type {
     /** @generated */
     private final FSGenerator fsGenerator = new FSGenerator() {
         public FeatureStructure createFS(int addr, CASImpl cas) {
-            if (AnnotationEntity_Type.this.useExistingInstance) {
+            if (NCBIEntity_Type.this.useExistingInstance) {
                 // Return eq fs instance if already created
-                FeatureStructure fs = AnnotationEntity_Type.this.jcas.getJfsFromCaddr(addr);
+                FeatureStructure fs = NCBIEntity_Type.this.jcas.getJfsFromCaddr(addr);
                 if (null == fs) {
-                    fs = new AnnotationEntity(addr, AnnotationEntity_Type.this);
-                    AnnotationEntity_Type.this.jcas.putJfsFromCaddr(addr, fs);
+                    fs = new NCBIEntity(addr, NCBIEntity_Type.this);
+                    NCBIEntity_Type.this.jcas.putJfsFromCaddr(addr, fs);
                     return fs;
                 }
                 return fs;
             }
-            else return new AnnotationEntity(addr, AnnotationEntity_Type.this);
+            else return new NCBIEntity(addr, NCBIEntity_Type.this);
         }
     };
 
     /** @generated */
-    public final static int typeIndexID = AnnotationEntity.typeIndexID;
+    public final static int typeIndexID = NCBIEntity.typeIndexID;
 
     /**
      * @generated
      * @modifiable
      */
-    public final static boolean featOkTst = JCasRegistry.getFeatOkTst("uima.AnnotationEntity");
+    public final static boolean featOkTst = JCasRegistry.getFeatOkTst("uima.ontology.NCBIEntity");
 
     /** @generated */
     final Feature casFeat_stem;
@@ -53,13 +53,13 @@ public class AnnotationEntity_Type extends Annotation_Type {
 
     /** @generated */
     public String getStem(int addr) {
-        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.AnnotationEntity");
+        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.ontology.NCBIEntity");
         return ll_cas.ll_getStringValue(addr, casFeatCode_stem);
     }
 
     /** @generated */
     public void setStem(int addr, String v) {
-        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.AnnotationEntity");
+        if (featOkTst && casFeat_stem == null) jcas.throwFeatMissing("stem", "uima.ontology.NCBIEntity");
         ll_cas.ll_setStringValue(addr, casFeatCode_stem, v);
     }
 
@@ -71,14 +71,32 @@ public class AnnotationEntity_Type extends Annotation_Type {
 
     /** @generated */
     public String getIri(int addr) {
-        if (featOkTst && casFeat_iri == null) jcas.throwFeatMissing("iri", "uima.AnnotationEntity");
+        if (featOkTst && casFeat_iri == null) jcas.throwFeatMissing("iri", "uima.ontology.NCBIEntity");
         return ll_cas.ll_getStringValue(addr, casFeatCode_iri);
     }
 
     /** @generated */
     public void setIri(int addr, String v) {
-        if (featOkTst && casFeat_iri == null) jcas.throwFeatMissing("iri", "uima.AnnotationEntity");
+        if (featOkTst && casFeat_iri == null) jcas.throwFeatMissing("iri", "uima.ontology.NCBIEntity");
         ll_cas.ll_setStringValue(addr, casFeatCode_iri, v);
+    }
+
+    /** @generated */
+    final Feature casFeat_word;
+
+    /** @generated */
+    final int casFeatCode_word;
+
+    /** @generated */
+    public String getWord(int addr) {
+        if (featOkTst && casFeat_word == null) jcas.throwFeatMissing("word", "uima.ontology.NCBIEntity");
+        return ll_cas.ll_getStringValue(addr, casFeatCode_word);
+    }
+
+    /** @generated */
+    public void setWord(int addr, String v) {
+        if (featOkTst && casFeat_word == null) jcas.throwFeatMissing("word", "uima.ontology.NCBIEntity");
+        ll_cas.ll_setStringValue(addr, casFeatCode_word, v);
     }
 
     /**
@@ -86,9 +104,12 @@ public class AnnotationEntity_Type extends Annotation_Type {
      *
      * @generated
      */
-    public AnnotationEntity_Type(JCas jcas, Type casType) {
+    public NCBIEntity_Type(JCas jcas, Type casType) {
         super(jcas, casType);
         casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
+
+        casFeat_word = jcas.getRequiredFeatureDE(casType, "word", "uima.cas.String", featOkTst);
+        casFeatCode_word = (null == casFeat_word) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl) casFeat_word).getCode();
 
         casFeat_stem = jcas.getRequiredFeatureDE(casType, "stem", "uima.cas.String", featOkTst);
         casFeatCode_stem = (null == casFeat_stem) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl) casFeat_stem).getCode();

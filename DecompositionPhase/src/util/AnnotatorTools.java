@@ -26,15 +26,21 @@ public class AnnotatorTools {
             StringTokenizer tokenizer = new StringTokenizer(word);
             String token;
             String wordStemmed ="";
-            while(tokenizer.hasMoreElements()) {
+            while (tokenizer.hasMoreElements()) {
                 token = tokenizer.nextToken();
-                stemmer.setCurrent(token);
-                stemmer.stem();
-                wordStemmed += stemmer.getCurrent();
+                try {
+                    stemmer.setCurrent(token);
+                    stemmer.stem();
+                    wordStemmed += stemmer.getCurrent();
+                }catch(Exception e){
+                    e.printStackTrace();
+                    System.out.println("%%%%TokenException:" +token);
+                }
                 if (tokenizer.hasMoreTokens()) {
                     wordStemmed += " ";
                 }
             }
+
             if(wordStemmed.length()>4) {//To try filter stemmed words very shorts
                 return (wordStemmed);
             }

@@ -4,7 +4,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.tcas.Annotation;
-import uima.ontology.AnnotationEntity_Type;
 
 public class TechniqueEntity extends Annotation {
     /**
@@ -96,7 +95,7 @@ public class TechniqueEntity extends Annotation {
      * @generated
      */
     public String getWord() {
-        if (AnnotationEntity_Type.featOkTst && ((TechniqueEntity_Type) jcasType).casFeat_word == null) jcasType.jcas.throwFeatMissing("word",
+        if (TechniqueEntity_Type.featOkTst && ((TechniqueEntity_Type) jcasType).casFeat_word == null) jcasType.jcas.throwFeatMissing("word",
                 "TechniqueEntity");
         return jcasType.ll_cas.ll_getStringValue(addr, ((TechniqueEntity_Type) jcasType).casFeatCode_word);
     }
