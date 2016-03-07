@@ -1,3 +1,40 @@
 Manifest-Version: 1.0
+Class-Path: owlapi-osgidistribution-4.0.2.jar sesame-model-2.7.12.jar 
+ sesame-util-2.7.12.jar slf4j-api-1.7.7.jar sesame-rio-api-2.7.12.jar 
+ sesame-rio-languages-2.7.12.jar sesame-rio-datatypes-2.7.12.jar sesam
+ e-rio-binary-2.7.12.jar sesame-rio-n3-2.7.12.jar sesame-rio-turtle-2.
+ 7.12.jar commons-io-2.4.jar sesame-rio-nquads-2.7.12.jar sesame-rio-n
+ triples-2.7.12.jar sesame-rio-rdfjson-2.7.12.jar jackson-core-2.2.1.j
+ ar sesame-rio-rdfxml-2.7.12.jar sesame-rio-trix-2.7.12.jar sesame-rio
+ -trig-2.7.12.jar jsonld-java-sesame-0.5.0.jar jsonld-java-0.5.0.jar j
+ ackson-databind-2.3.3.jar jackson-annotations-2.3.0.jar httpclient-ca
+ che-4.2.5.jar httpclient-4.2.5.jar httpcore-4.2.4.jar commons-codec-1
+ .6.jar jcl-over-slf4j-1.7.7.jar semargl-sesame-0.6.1.jar semargl-core
+ -0.6.1.jar semargl-rdfa-0.6.1.jar semargl-rdf-0.6.1.jar guava-18.0.ja
+ r guice-4.0-beta.jar javax.inject-1.jar aopalliance-1.0.jar guice-mul
+ tibindings-4.0-beta.jar jsr305-2.0.1.jar org.apache.commons.io-2.4.ja
+ r trove4j-3.0.3.jar commons-io-2.4.jar stanford-english-corenlp-2016-
+ 01-10-models.jar uimaj-core-2.8.0.jar uimafit-1.4.0.jar commons-lang-
+ 2.4.jar commons-io-1.4.jar uimaj-core-2.4.0.jar uimaj-tools-2.4.0.jar
+  uimaj-cpe-2.4.0.jar uimaj-adapter-vinci-2.4.0.jar jVinci-2.4.0.jar u
+ imaj-document-annotation-2.4.0.jar spring-core-3.1.0.RELEASE.jar spri
+ ng-asm-3.1.0.RELEASE.jar commons-logging-1.1.1.jar spring-context-3.1
+ .0.RELEASE.jar spring-aop-3.1.0.RELEASE.jar aopalliance-1.0.jar sprin
+ g-beans-3.1.0.RELEASE.jar spring-expression-3.1.0.RELEASE.jar stanfor
+ d-corenlp-3.6.0.jar xom-1.2.10.jar xercesImpl-2.8.0.jar xalan-2.7.0.j
+ ar joda-time-2.9.jar jollyday-0.4.7.jar jaxb-api-2.2.7.jar ejml-0.23.
+ jar javax.json-api-1.0.jar slf4j-api-1.7.12.jar ant-1.9.4.jar ant-ant
+ lr-1.9.4.jar ant-junit-1.9.4.jar ant-launcher-1.9.4.jar bsf-2.4.0.jar
+  commons-cli-1.2.jar commons-logging-1.2.jar gpars-1.2.1.jar groovy-2
+ .4.3.jar groovy-ant-2.4.3.jar groovy-bsf-2.4.3.jar groovy-console-2.4
+ .3.jar groovy-docgenerator-2.4.3.jar groovy-groovydoc-2.4.3.jar groov
+ y-groovysh-2.4.3.jar groovy-jmx-2.4.3.jar groovy-json-2.4.3.jar groov
+ y-jsr223-2.4.3.jar groovy-nio-2.4.3.jar groovy-servlet-2.4.3.jar groo
+ vy-sql-2.4.3.jar groovy-swing-2.4.3.jar groovy-templates-2.4.3.jar gr
+ oovy-test-2.4.3.jar groovy-testng-2.4.3.jar groovy-xml-2.4.3.jar hamc
+ rest-core-1.3.jar ivy-2.4.0.jar jansi-1.11.jar jcommander-1.47.jar jl
+ ine-2.12.jar jsp-api-2.0.jar jsr166y-1.7.0.jar junit-4.12.jar multive
+ rse-core-0.7.0.jar openbeans-1.0.jar qdox-1.12.1.jar servlet-api-2.4.
+ jar testng-6.8.13.jar xmlpull-1.1.3.1.jar xstream-1.4.7.jar
 Main-Class: RecipeAnnotator
 
