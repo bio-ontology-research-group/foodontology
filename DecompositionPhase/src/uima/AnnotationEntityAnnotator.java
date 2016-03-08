@@ -1,21 +1,28 @@
 package uima;
 
+
+import lemmatizer.LemmatizerAdaptor;
+import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.FileDocumentSource;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.search.EntitySearcher;
+import org.uimafit.descriptor.ConfigurationParameter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import stemmer.StemmerAdaptor;
 import uima.flavor.FlavorEntity;
+import uima.list.AgrovocEntity;
 import uima.measurement.MeasurementEntity;
 import uima.ontology.*;
 import uima.phytochemical.PhytochemicalEntity;
 import uima.technique.TechniqueEntity;
 import uima.thesaurus.ThesaurusEntity;
-import util.AnnotatorTools;
+import util.LinguisticTool;
 import util.WordEntry;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -24,7 +31,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,62 +42,84 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
     private HashMap chebiLabels, envoLabels, ncbiLabels, plantLabels, uberonLabels;//to avoid repeated labels. Ontologies
     private HashMap techniquesLabels, measurementsLabels;
     private HashMap flavorsLabels, foodKBLabels, ontoFoodLabels, openFoodLabels;
-    private HashMap languaLabels, phytoChemicals;
+    private HashMap languaLabels, phytoChemicals,agrovocLabels;
     private HashMap<String,HashSet<String>> chebi2phyto;
-    private AnnotatorTools annotatorTools;
+    private LinguisticTool linguisticTool;
 
     public AnnotationEntityAnnotator() {
-        //create the annotator tool
-        annotatorTools= new AnnotatorTools();
-        //load the ontologies
-        String separator = System.getProperty("file.separator");
-        String currentPath = System.getProperty("user.dir").replace("src", "");
-        String ontologiesPath = currentPath + separator + "resources" + separator + "ontologies" + separator;
-        chebiLabels = new HashMap<String, WordEntry>();
-        loadLabelsOntology(new File(ontologiesPath+"chebi.owl"),chebiLabels);
-        envoLabels = new HashMap<String, WordEntry>();
-        loadLabelsOntology(new File(ontologiesPath+"envo.owl"),envoLabels);
-        ncbiLabels = new HashMap<String, WordEntry>();
-        //loadLabelsOntology(new File(ontologiesPath+"NCBITAXON_2.owl"),ncbiLabels);
-        plantLabels = new HashMap<String, WordEntry>();
-        loadLabelsOntology(new File(ontologiesPath+"plant-ontology-21.owl"),plantLabels);
-        uberonLabels = new HashMap<String, WordEntry>();
-        loadLabelsOntology(new File(ontologiesPath+"uberon_ext.owl"),uberonLabels);
-        foodKBLabels = new HashMap<String, WordEntry>();
-        loadAnnotationsOntology(new File(ontologiesPath + "FoodKB.owl"), foodKBLabels, true);
-        ontoFoodLabels = new HashMap<String, WordEntry>();
-        loadClassesOntology(new File(ontologiesPath + "OntoFood.owl"), ontoFoodLabels);
-        openFoodLabels = new HashMap<String, WordEntry>();
-        loadAnnotationsOntology(new File(ontologiesPath + "OpenFoodSafetyModelRepository.owl"), openFoodLabels,false);
 
-        //load files
-        String fileName = "cooking_measurements.txt";
-        String measurementsPath =  currentPath + separator + "resources" + separator + "measurements" + separator + fileName;
-        measurementsLabels = new HashMap<String, WordEntry>();
-        loadTermsFile(new File(measurementsPath),measurementsLabels);
-        fileName = "cooking_techniques.txt";
-        String techniquesPath = currentPath+separator+"resources"+separator+"techniques"+separator+fileName;
-        techniquesLabels = new HashMap<String, WordEntry>();
-        loadTermsFile(new File(techniquesPath),techniquesLabels);
+    }
 
-        //load flavours
-        fileName = "flavournet_org.txt";
-        String flavorPath = currentPath+separator+"resources"+separator+"flavours"+separator+fileName;
-        flavorsLabels = new HashMap<String, WordEntry>();
-        loadFlavorsFile(new File(flavorPath), flavorsLabels);
+    public void initialize(UimaContext context) throws ResourceInitializationException {
+        try {
+            String tool = (String) context.getConfigParameterValue("LinguisticTool");
+            if ((tool == null) || (tool.isEmpty())) {
+                throw new Exception();
+            }
+            linguisticTool = (LinguisticTool) Class.forName(tool).newInstance();
 
-        //load thesaurus
-        fileName= "LanguaL2014.XML";
-        String languaPath = currentPath+separator+"resources"+separator+"thesaurus"+separator+fileName;
-        languaLabels = new HashMap<String, WordEntry>();
-        loadLanguaThesaurus(new File(languaPath),languaLabels);
 
-        //load phytochemicals
-        fileName = "phytochebi.tsv";
-        String phytoChemicalsPath = currentPath+separator+"resources"+separator+"phytochemicals"+separator+fileName;
-        phytoChemicals = new HashMap<String, WordEntry>();
-        chebi2phyto = new HashMap<String,HashSet<String>>();
-        loadPhytoChemicals(new File(phytoChemicalsPath),phytoChemicals);
+            String separator = System.getProperty("file.separator");
+            String currentPath = System.getProperty("user.dir").replace("src", "");
+            String ontologiesPath = currentPath + separator + "resources" + separator + "ontologies" + separator;
+            chebiLabels = new HashMap<String, WordEntry>();
+            loadLabelsOntology(new File(ontologiesPath+"chebi.owl"),chebiLabels);
+            envoLabels = new HashMap<String, WordEntry>();
+            loadLabelsOntology(new File(ontologiesPath+"envo.owl"),envoLabels);
+            ncbiLabels = new HashMap<String, WordEntry>();
+            //loadLabelsOntology(new File(ontologiesPath+"NCBITAXON_2.owl"),ncbiLabels);
+            plantLabels = new HashMap<String, WordEntry>();
+            loadLabelsOntology(new File(ontologiesPath+"plant-ontology-21.owl"),plantLabels);
+            uberonLabels = new HashMap<String, WordEntry>();
+            loadLabelsOntology(new File(ontologiesPath+"uberon_ext.owl"),uberonLabels);
+            foodKBLabels = new HashMap<String, WordEntry>();
+            loadAnnotationsOntology(new File(ontologiesPath + "FoodKB.owl"), foodKBLabels, true);
+            ontoFoodLabels = new HashMap<String, WordEntry>();
+            loadClassesOntology(new File(ontologiesPath + "OntoFood.owl"), ontoFoodLabels);
+            openFoodLabels = new HashMap<String, WordEntry>();
+            loadAnnotationsOntology(new File(ontologiesPath + "OpenFoodSafetyModelRepository.owl"), openFoodLabels,false);
+            agrovocLabels = new HashMap<String, WordEntry>();
+
+            //load files
+            String fileName = "cooking_measurements.txt";
+            String measurementsPath =  currentPath + separator + "resources" + separator + "measurements" + separator + fileName;
+            measurementsLabels = new HashMap<String, WordEntry>();
+            loadTermsFile(new File(measurementsPath),measurementsLabels);
+            fileName = "cooking_techniques.txt";
+            String techniquesPath = currentPath+separator+"resources"+separator+"techniques"+separator+fileName;
+            techniquesLabels = new HashMap<String, WordEntry>();
+            loadTermsFile(new File(techniquesPath),techniquesLabels);
+
+            fileName = "agrovoc_2016-01-21_core.rdf";
+            String agrovocPath = currentPath+separator+"resources"+separator+"agrovoc"+separator+fileName;
+            agrovocLabels = new HashMap<String, WordEntry>();
+            loadTermsFile(new File(agrovocPath), agrovocLabels);
+
+            //load flavours
+            fileName = "flavournet_org.txt";
+            String flavorPath = currentPath+separator+"resources"+separator+"flavours"+separator+fileName;
+            flavorsLabels = new HashMap<String, WordEntry>();
+            loadFlavorsFile(new File(flavorPath), flavorsLabels);
+
+            //load thesaurus
+            fileName= "LanguaL2014.XML";
+            String languaPath = currentPath+separator+"resources"+separator+"thesaurus"+separator+fileName;
+            languaLabels = new HashMap<String, WordEntry>();
+            loadLanguaThesaurus(new File(languaPath),languaLabels);
+
+            //load phytochemicals
+            fileName = "phytochebi.tsv";
+            String phytoChemicalsPath = currentPath+separator+"resources"+separator+"phytochemicals"+separator+fileName;
+            phytoChemicals = new HashMap<String, WordEntry>();
+            chebi2phyto = new HashMap<String,HashSet<String>>();
+            loadPhytoChemicals(new File(phytoChemicalsPath), phytoChemicals);
+
+
+
+        }catch(Exception e){
+            System.out.println("A linguistic tool has to be defined in the ddescriptor:RecipeAnnotator.xml");
+            System.exit(-1);
+        }
     }
 
     private void loadPhytoChemicals(File phytoFile, HashMap<String, WordEntry> hashMap){
@@ -114,7 +146,7 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                                 HashSet<String> set = null;
                                 for(String id : idsChebi) {
                                     id = id.toUpperCase();
-                                    id = annotatorTools.removeWhiteSpaces(id);
+                                    id = linguisticTool.removeWhiteSpaces(id);
                                     id = "CHEBI_"+id;
                                     if (chebi2phyto.containsKey(id)) {
                                         set = chebi2phyto.get(id);
@@ -127,12 +159,12 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                             }
                             if(plantName.compareTo(".")!=0){
                                 plantName = plantName.toLowerCase();
-                                plantName = annotatorTools.removeWhiteSpaces(plantName);
-                                String plantNameStemmed = annotatorTools.textStemmer(plantName);
+                                plantName = linguisticTool.removeWhiteSpaces(plantName);
+                                String plantNameStemmed = linguisticTool.processString(plantName);
                                 WordEntry entry = new WordEntry(plantName, plantNameStemmed);
                                 for(String id : idsChebi) {
                                     id = id.toUpperCase();
-                                    id = annotatorTools.removeWhiteSpaces(id);
+                                    id = linguisticTool.removeWhiteSpaces(id);
                                     id = "CHEBI_" + id;
                                     entry.addAnnotation(id);
                                 }
@@ -203,14 +235,14 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                     }
                     for(String term : termSet){
                         term = term.toLowerCase();
-                        term = annotatorTools.removeWhiteSpaces(term);
-                        String stem = annotatorTools.textStemmer(term);
+                        term = linguisticTool.removeWhiteSpaces(term);
+                        String stem = linguisticTool.processString(term);
                         hashMap.put(stem, new WordEntry(term,stem));
                     }
                     for(String synonym : synSet){
                         synonym = synonym.toLowerCase();
-                        synonym = annotatorTools.removeWhiteSpaces(synonym);
-                        String stem = annotatorTools.textStemmer(synonym);
+                        synonym = linguisticTool.removeWhiteSpaces(synonym);
+                        String stem = linguisticTool.processString(synonym);
                         hashMap.put(stem, new WordEntry(synonym,stem));
                     }
                 }
@@ -237,8 +269,8 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                             String[] ingredients = attributes[5].split(",");
                             for(String ingredient : ingredients) {
                                 ingredient = ingredient.toLowerCase();
-                                ingredient = annotatorTools.removeWhiteSpaces(ingredient);
-                                stem = annotatorTools.textStemmer(ingredient);
+                                ingredient = linguisticTool.removeWhiteSpaces(ingredient);
+                                stem = linguisticTool.processString(ingredient);
                                 if(hashMap.containsKey(stem)){
                                     wordEntry = hashMap.get(stem);
                                     wordEntry.addAnnotation(flavor);
@@ -272,8 +304,8 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                 while ((strLine = br.readLine()) != null) {
                     if (strLine != null) {
                         strLine = strLine.toLowerCase();
-                        strLine = annotatorTools.removeWhiteSpaces(strLine);
-                        stem = annotatorTools.textStemmer(strLine);
+                        strLine = linguisticTool.removeWhiteSpaces(strLine);
+                        stem = linguisticTool.processString(strLine);
                         hashMap.put(stem, new WordEntry(strLine,stem));
                     }
                 }
@@ -309,8 +341,8 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                                 literal = annotation.getValue().asLiteral().get().getLiteral();
                             }
                             literal = literal.toLowerCase();
-                            literal = annotatorTools.removeWhiteSpaces(literal);
-                            String literalStemmed = annotatorTools.textStemmer(literal);
+                            literal = linguisticTool.removeWhiteSpaces(literal);
+                            String literalStemmed = linguisticTool.processString(literal);
                             hashMap.put(literalStemmed, new WordEntry(literal, iri.getShortForm(), literalStemmed));
                         }
                     }
@@ -337,8 +369,8 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                     String literal = owlClass.getIRI().getShortForm();
                     literal = literal.replaceAll("_"," ");
                     literal = literal.toLowerCase();
-                    literal = annotatorTools.removeWhiteSpaces(literal);
-                    String literalStemmed = annotatorTools.textStemmer(literal);
+                    literal = linguisticTool.removeWhiteSpaces(literal);
+                    String literalStemmed = linguisticTool.processString(literal);
                     hashMap.put(literalStemmed, new WordEntry(literal, iri, literalStemmed));
                 }
             }
@@ -365,10 +397,10 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                                 annotation.getProperty().getIRI().getRemainder().get().toLowerCase().contains("synonym") ){
                             if(annotation.getValue() instanceof OWLLiteral) {
                                 String label = ((OWLLiteral) annotation.getValue()).getLiteral();
-                                label = annotatorTools.removeWhiteSpaces(label);
+                                label = linguisticTool.removeWhiteSpaces(label);
                                 if(label.length()>4) {
                                     label = label.toLowerCase();
-                                    String labelStemmed = annotatorTools.textStemmer(label);
+                                    String labelStemmed = linguisticTool.processString(label);
                                     hashMap.put(labelStemmed, new WordEntry(label, iri, labelStemmed));
                                 }
                             }
@@ -390,7 +422,7 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
             flagMultiword = false;
             pattern="(\\b";
             while (keyTokenizer.hasMoreTokens()) {
-                pattern +=annotatorTools.escapePattern(keyTokenizer.nextToken())+"[\\w]*";
+                pattern +=linguisticTool.escapePattern(keyTokenizer.nextToken())+"[\\w]*";
                 if(keyTokenizer.hasMoreTokens()){
                     flagMultiword = true;
                     pattern +="\\s";
@@ -508,14 +540,6 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                         technique.setStem(entry.getStem());
                         technique.addToIndexes();
                         break;
-                    case AnnotationTypes.THESAURUS_ENTITY_TYPE:
-                        ThesaurusEntity thesaurus = new ThesaurusEntity(aJCas);
-                        thesaurus.setBegin(matcher.start());
-                        thesaurus.setEnd(matcher.end());
-                        thesaurus.setWord(entry.getWord());
-                        thesaurus.setStem(entry.getStem());
-                        thesaurus.addToIndexes();
-                        break;
                     case AnnotationTypes.FLAVOUR_ENTITY_TYPE:
                         for(String flavor : entry.getAnnotations()) {
                             FlavorEntity flavorEntity = new FlavorEntity(aJCas);
@@ -526,6 +550,23 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
                             flavorEntity.setFlavor(flavor);
                             flavorEntity.addToIndexes();
                         }
+                        break;
+                    case AnnotationTypes.THESAURUS_ENTITY_TYPE:
+                        ThesaurusEntity thesaurus = new ThesaurusEntity(aJCas);
+                        thesaurus.setBegin(matcher.start());
+                        thesaurus.setEnd(matcher.end());
+                        thesaurus.setWord(entry.getWord());
+                        thesaurus.setStem(entry.getStem());
+                        thesaurus.addToIndexes();
+                        break;
+
+                    case AnnotationTypes.AGROVOC_ENTITY_TYPE:
+                        AgrovocEntity agrovocEntity = new AgrovocEntity(aJCas);
+                        agrovocEntity.setBegin(matcher.start());
+                        agrovocEntity.setEnd(matcher.end());
+                        agrovocEntity.setWord(entry.getWord());
+                        agrovocEntity.setStem(entry.getStem());
+                        agrovocEntity.addToIndexes();
                         break;
                 }
             }
@@ -540,7 +581,7 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
         // get document text
         String docText = aJCas.getDocumentText();
         //Ontologies
-        String docTextStemmed = annotatorTools.textStemmer(docText);
+        String docTextStemmed = linguisticTool.processString(docText);
         docTextStemmed = docTextStemmed.toLowerCase();
         annotateContent(aJCas,docTextStemmed,chebiLabels,AnnotationTypes.CHEBI_ENTITY_TYPE);
         annotateContent(aJCas,docTextStemmed,envoLabels,AnnotationTypes.ENVO_ENTITY_TYPE);
@@ -550,6 +591,8 @@ public class AnnotationEntityAnnotator extends JCasAnnotator_ImplBase {
         annotateContent(aJCas,docTextStemmed,openFoodLabels,AnnotationTypes.OPENDFOOD_ENTITY_TYPE);
         annotateContent(aJCas,docTextStemmed,plantLabels,AnnotationTypes.PLANT_ENTITY_TYPE);
         annotateContent(aJCas,docTextStemmed,uberonLabels,AnnotationTypes.UBERON_ENTITY_TYPE);
+        annotateContent(aJCas,docTextStemmed,agrovocLabels,AnnotationTypes.AGROVOC_ENTITY_TYPE);
+
         //Phytochemicals
         annotateContent(aJCas,docTextStemmed,phytoChemicals,AnnotationTypes.PHYTOCHEMICAL_ENTITY_TYPE);
         //Measurements

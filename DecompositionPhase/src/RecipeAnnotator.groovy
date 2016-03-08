@@ -1,24 +1,19 @@
-import groovyx.gpars.GParsPool
-import org.apache.commons.io.IOUtils
 import org.apache.commons.lang.math.NumberUtils
+import org.apache.uima.UIMAFramework
 import org.apache.uima.analysis_engine.AnalysisEngine
-import org.apache.uima.cas.FSIterator
 import org.apache.uima.jcas.JCas
 import org.apache.uima.jcas.tcas.Annotation
+import org.apache.uima.resource.ResourceManager
+import org.apache.uima.resource.ResourceSpecifier
+import org.apache.uima.util.XMLInputSource
+import org.uimafit.descriptor.ConfigurationParameter
 import org.uimafit.factory.AnalysisEngineFactory
 import stopwords.StopWordsLists
-import sun.reflect.annotation.AnnotationType
 import uima.AnnotationTypes
 import uima.flavor.FlavorEntity
+import uima.list.AgrovocEntity
 import uima.measurement.MeasurementEntity
-import uima.ontology.ChebiEntity
-import uima.ontology.EnvoEntity
-import uima.ontology.FoodKBEntity
-import uima.ontology.NCBIEntity
-import uima.ontology.OntoFoodEntity
-import uima.ontology.OpenFoodEntity
-import uima.ontology.PlantEntity
-import uima.ontology.UberonEntity
+import uima.ontology.*
 import uima.phytochemical.PhytochemicalEntity
 import uima.technique.TechniqueEntity
 import uima.thesaurus.ThesaurusEntity
@@ -31,25 +26,42 @@ String currentPath = System.getProperty("user.dir").replace("src","");
 ConcurrentHashMap termFrequency = new ConcurrentHashMap();
 ConcurrentHashMap conceptFrequency = new ConcurrentHashMap();
 
-GParsPool.withPool {
-    def annotationFile = new PrintWriter(new BufferedWriter(new FileWriter(currentPath+separator+"outputs"+separator+"annotation_paralell.txt")));
-    def parserFile = new PrintWriter(new BufferedWriter(new FileWriter(currentPath+separator+"outputs"+separator+"parser_paralell.txt")));
-    AnalysisEngine engine = AnalysisEngineFactory
-            .createAnalysisEngineFromPath(currentPath + separator + "resources" + separator + "annotators" + separator + "RecipeAnnotator.xml");
+//GParsPool.withPool {
+    def annotationFile = new PrintWriter(new BufferedWriter(new FileWriter(currentPath+separator+"outputs"+separator+"annotation_paralell_lemmatizer.txt")));
+    def parserFile = new PrintWriter(new BufferedWriter(new FileWriter(currentPath+separator+"outputs"+separator+"parser_paralell_lemmatizer.txt")));
 
-    File recipiesFolder = new File(currentPath+separator+"resources"+separator+"recipes");
-    recipiesFolder.listFiles().eachWithIndexParallel { File recipeFile, int idRecipe  ->
+    ResourceManager rsrcMgr = UIMAFramework
+        .newDefaultResourceManager();
+    XMLInputSource file = new XMLInputSource(new File(currentPath + separator + "resources" + separator + "annotators" + separator + "RecipeAnnotator.xml"));
+
+    ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(file);
+
+    AnalysisEngine engine = UIMAFramework.produceAnalysisEngine(specifier, rsrcMgr, null);
+
+
+    //File recipesFolder = new File(currentPath+separator+"resources"+separator+"recipes");
+    File recipesFolder = new File(currentPath+separator+"resources"+separator+"database"+separator+"en.openfoodfacts.org.products.csv");
+    //recipesFolder.listFiles().eachWithIndexParallel { File recipeFile, int idRecipe  ->
+    int idRecipe =0;
+    recipesFolder.eachLine{ String line  ->
     //recipiesFolder.listFiles().eachWithIndex { File recipeFile, int idRecipe  ->
-        if (recipeFile != null) {
+        idRecipe++;
+        if ((line != null)&&(idRecipe>1)) {
+            String[] parameters = line.split("\t")
             recipeCounter++;
-            //Ontologies
-            String title = URLDecoder.decode(recipeFile.getName(), "utf-8");
+            /*String title = URLDecoder.decode(recipeFile.getName(), "utf-8");
             title = title.replace("\n", "").replace("\r", "").replace("\"","");
             if (title.lastIndexOf('.') > -1) {
                 title = title.substring(0, title.lastIndexOf('.'))
             }
+            String content = IOUtils.toString(new FileReader(recipeFile));*/
 
-            String content = IOUtils.toString(new FileReader(recipeFile));
+            //6 product name
+            //34, 45, 46, 47, 48, 49, 50 ingredientes
+            String title = parameters[6]
+
+            String content = line[34]+" "+line[45]+" "+line[46]+" "+line[47]+" "+line[48]+" "+line[49]+" "+line[50];
+
 
             JCas jCas = AnalysisEngineFactory.process(engine, content);
             synchronized (jCas) {
@@ -166,6 +178,14 @@ GParsPool.withPool {
                             pos = AnnotationTypes.MEASUREMENT_ENTITY_TYPE;
                             annotation += measurementEntity.getWord() + "\t" + measurementEntity.getStem() + "\t" + measurementEntity.getBegin() + "\t" + measurementEntity.getEnd() + "\n";
                             break;
+                        case AgrovocEntity.type:
+                            agrovocEntity = (AgrovocEntity) gAnnotation;
+                            iri = agrovocEntity.word;
+                            word = agrovocEntity.word;
+                            pos = AnnotationTypes.AGROVOC_ENTITY_TYPE;
+                            annotation += agrovocEntity.word + "\t" + agrovocEntity.stem + "\t" + agrovocEntity.iri + "\t" + agrovocEntity.begin + "\t" + agrovocEntity.end + "\n";
+                            break;
+
                     }
 
                     if(pos>=0) {
@@ -241,7 +261,7 @@ GParsPool.withPool {
         }
     }
     annotationFile.close();
-}
+//}
 
 def termStatisticsFile = new PrintWriter(new BufferedWriter(new FileWriter(currentPath+separator+"outputs"+separator+"terms_statistics.txt")));
 termStatisticsFile.println("Number of recipes:"+recipeCounter);

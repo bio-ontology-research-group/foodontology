@@ -17,5 +17,6 @@ public class AnnotationTypes {
     public static final int TECHNIQUE_ENTITY_TYPE=10;
     public static final int FLAVOUR_ENTITY_TYPE=11;
     public static final int THESAURUS_ENTITY_TYPE=12;
-    public static final int MAX_ANNOTATION_TYPES=13;
+    public static final int AGROVOC_ENTITY_TYPE=13;
+    public static final int MAX_ANNOTATION_TYPES=14;
 }
